@@ -2,13 +2,20 @@
  * Created by dungtran on 8/20/17.
  */
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { View, TextInput, StyleSheet, Dimensions, Text, Animated } from 'react-native';
-import zxcvbn from 'zxcvbn';
-import _ from 'lodash';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Dimensions,
+  Text,
+  Animated
+} from "react-native";
+import zxcvbn from "zxcvbn";
+import _ from "lodash";
 
-const { width: wWidth } = Dimensions.get('window');
+const { width: wWidth } = Dimensions.get("window");
 
 const widthByPercent = (percentage, containerWidth = wWidth) => {
   const value = (percentage * containerWidth) / 100;
@@ -26,62 +33,54 @@ const regex = {
 
 export default class PasswordStrengthChecker extends Component {
   static defaultProps = {
-    minLevel: 2,
+    minLevel: 1,
     minLength: 0,
-    ruleNames: 'lowerCase|upperCase|digits|symbols',
+    ruleNames: "lowerCase|upperCase|digits|symbols",
     strengthLevels: [
       {
-        label: 'Weak',
-        labelColor: '#fff',
+        label: "Weak",
+        labelColor: "#fe6c6c",
         widthPercent: 33,
-        innerBarColor: '#fe6c6c'
+        innerBarColor: "#fe6c6c"
       },
       {
-        label: 'Weak',
-        labelColor: '#fff',
-        widthPercent: 33,
-        innerBarColor: '#fe6c6c'
-      },
-      {
-        label: 'Fair',
-        labelColor: '#fff',
+        label: "Fair",
+        labelColor: "#feb466",
         widthPercent: 67,
-        innerBarColor: '#feb466'
+        innerBarColor: "#feb466"
       },
       {
-        label: 'Fair',
-        labelColor: '#fff',
+        label: "Fair",
+        labelColor: "#feb466",
         widthPercent: 67,
-        innerBarColor: '#feb466'
+        innerBarColor: "#feb466"
       },
       {
-        label: 'Strong',
-        labelColor: '#fff',
+        label: "Strong",
+        labelColor: "#6cfeb5",
         widthPercent: 100,
-        innerBarColor: '#6cfeb5'
+        innerBarColor: "#6cfeb5"
       }
     ],
     tooShort: {
-      enabled: false,
-      labelColor: '#fff',
-      label: 'Too short',
+      enabled: true,
+      labelColor: "#ccc",
+      label: "Too short",
       widthPercent: 33,
-      innerBarColor: '#fe6c6c'
+      innerBarColor: "#fe6c6c"
     },
-    barColor: '#ffffff',
+    barColor: "#ffffff",
     barWidthPercent: 70,
     showBarOnEmpty: true
   };
-  
+
   static propTypes = {
-    onChangeText: PropTypes.func.isRequired,
+    value: PropTypes.string,
     minLength: PropTypes.number,
     ruleNames: PropTypes.string,
     strengthLevels: PropTypes.array,
     tooShort: PropTypes.object,
     minLevel: PropTypes.number,
-    inputWrapperStyle: View.propTypes.style,
-    inputStyle: TextInput.propTypes.style,
     strengthWrapperStyle: View.propTypes.style,
     strengthBarStyle: View.propTypes.style,
     innerStrengthBarStyle: View.propTypes.style,
@@ -90,7 +89,7 @@ export default class PasswordStrengthChecker extends Component {
     barWidthPercent: PropTypes.number,
     showBarOnEmpty: PropTypes.bool
   };
-  
+
   constructor(props) {
     super(props);
     this.animatedInnerBarWidth = new Animated.Value(0);
@@ -98,16 +97,16 @@ export default class PasswordStrengthChecker extends Component {
     this.state = {
       level: -1,
       isTooShort: false
-    }
+    };
   }
-  
+
   componentDidMount() {
     const { showBarOnEmpty } = this.props;
     if (showBarOnEmpty) {
       this.showFullBar();
     }
   }
-  
+
   showFullBar(isShow = true) {
     const { barWidthPercent } = this.props;
     const barWidth = isShow ? widthByPercent(barWidthPercent) : 0;
@@ -116,7 +115,7 @@ export default class PasswordStrengthChecker extends Component {
       duration: 20
     }).start();
   }
-  
+
   isTooShort(password) {
     const { minLength } = this.props;
     if (!minLength) {
@@ -124,19 +123,19 @@ export default class PasswordStrengthChecker extends Component {
     }
     return password.length < minLength;
   }
-  
+
   isMatchingRules(password) {
     const { ruleNames } = this.props;
     if (!ruleNames) {
       return true;
     }
-    
+
     const rules = _.chain(ruleNames)
-      .split('|')
+      .split("|")
       .filter(rule => !!rule)
       .map(rule => rule.trim())
       .value();
-    
+
     for (const rule of rules) {
       if (!this.isMatchingRule(password, rule)) {
         return false;
@@ -144,26 +143,35 @@ export default class PasswordStrengthChecker extends Component {
     }
     return true;
   }
-  
+
   isMatchingRule(password, rule) {
     switch (rule) {
-      case 'symbols':
+      case "symbols":
         return regex.symbolsPattern.test(password);
-      case 'words':
+      case "words":
         return regex.wordsPattern.test(password);
-      case 'digits':
+      case "digits":
         return regex.digitsPattern.test(password);
-      case 'letters':
+      case "letters":
         return regex.lettersPattern.test(password);
-      case 'lowerCase':
+      case "lowerCase":
         return regex.lowerCasePattern.test(password);
-      case 'upperCase':
+
+      case "upperCase":
         return regex.upperCasePattern.test(password);
       default:
         return true;
     }
   }
-  
+
+  componentWillReceiveProps(nextprops) {
+    console.log(nextprops);
+    const level = this.getPasswordStrengthLevel(nextprops.value);
+    this.setState({
+      level: level
+    });
+  }
+
   calculateScore(text) {
     if (!text) {
       this.setState({
@@ -171,60 +179,34 @@ export default class PasswordStrengthChecker extends Component {
       });
       return -1;
     }
-    
+
     if (this.isTooShort(text)) {
       this.setState({
         isTooShort: true
       });
       return 0;
     }
-    
+
     this.setState({
       isTooShort: false
     });
-    
+
     if (!this.isMatchingRules(text)) {
       return 0;
     }
-    
+
     return zxcvbn(text).score;
   }
-  
+
   getPasswordStrengthLevel(password) {
     return this.calculateScore(password);
   }
-  
-  onChangeText(password) {
-    const level = this.getPasswordStrengthLevel(password);
-    this.setState({
-      level: level
-    });
-    const isValid = this.isMatchingRules(password) && level >= this.props.minLevel;
-    this.props.onChangeText(password, isValid);
-  }
-  
-  renderPasswordInput() {
-    const { inputWrapperStyle, inputStyle } = this.props;
-    return (
-      <View style={[styles.inputWrapper, inputWrapperStyle]}>
-        <TextInput
-          selectionColor="#fff"
-          autoCapitalize="none"
-          autoCorrect={false}
-          multiline={false}
-          underlineColorAndroid="transparent"
-          {...this.props}
-          style={[styles.input, inputStyle]}
-          onChangeText={text => this.onChangeText(text)}
-        />
-      </View>
-    );
-  }
-  
+
   renderPasswordStrength() {
     const {
       barWidthPercent,
       tooShort,
+      value,
       strengthLevels,
       barColor,
       strengthWrapperStyle,
@@ -233,32 +215,40 @@ export default class PasswordStrengthChecker extends Component {
       strengthDescriptionStyle,
       showBarOnEmpty
     } = this.props;
-    
+
     const barWidth = widthByPercent(barWidthPercent);
-    
+
     const { level } = this.state;
-    
-    let strengthLevelBarStyle = {}, strengthLevelLabelStyle = {}, strengthLevelLabel = '', innerBarWidth = 0;
+
+    let strengthLevelBarStyle = {},
+      strengthLevelLabelStyle = {},
+      strengthLevelLabel = "",
+      innerBarWidth = 0;
     if (level !== -1) {
-      
       if (!showBarOnEmpty) {
         this.showFullBar();
       }
-      
-      innerBarWidth = widthByPercent(strengthLevels[level].widthPercent, barWidth);
+
+      innerBarWidth = widthByPercent(
+        strengthLevels[level].widthPercent,
+        barWidth
+      );
       strengthLevelBarStyle = {
         backgroundColor: strengthLevels[level].innerBarColor
       };
-      
+
       strengthLevelLabelStyle = {
         color: strengthLevels[level].labelColor
       };
       strengthLevelLabel = strengthLevels[level].label;
-      
+
       if (tooShort.enabled && this.state.isTooShort) {
-        innerBarWidth = widthByPercent(tooShort.widthPercent, barWidth) || widthByPercent(strengthLevels[level].widthPercent, barWidth);
+        innerBarWidth =
+          widthByPercent(tooShort.widthPercent, barWidth) ||
+          widthByPercent(strengthLevels[level].widthPercent, barWidth);
         strengthLevelBarStyle = {
-          backgroundColor: tooShort.innerBarColor || strengthLevels[level].innerBarColor
+          backgroundColor:
+            tooShort.innerBarColor || strengthLevels[level].innerBarColor
         };
         strengthLevelLabelStyle = {
           color: tooShort.labelColor || strengthLevels[level].labelColor
@@ -270,60 +260,57 @@ export default class PasswordStrengthChecker extends Component {
         this.showFullBar(false);
       }
     }
-    
+
     Animated.timing(this.animatedInnerBarWidth, {
       toValue: innerBarWidth,
       duration: 800
     }).start();
-    
+
     return (
       <View style={[styles.passwordStrengthWrapper, strengthWrapperStyle]}>
-        <Animated.View style={[styles.passwordStrengthBar, strengthBarStyle, { backgroundColor: barColor, width: this.animatedBarWidth }]}>
-          <Animated.View style={[styles.innerPasswordStrengthBar, innerStrengthBarStyle, { ...strengthLevelBarStyle, width: this.animatedInnerBarWidth }]} />
+        <Animated.View
+          style={[
+            styles.passwordStrengthBar,
+            strengthBarStyle,
+            { backgroundColor: barColor, width: this.animatedBarWidth }
+          ]}>
+          <Animated.View
+            style={[
+              styles.innerPasswordStrengthBar,
+              innerStrengthBarStyle,
+              { ...strengthLevelBarStyle, width: this.animatedInnerBarWidth }
+            ]}
+          />
         </Animated.View>
-        <Text style={[styles.strengthDescription, strengthDescriptionStyle, { ...strengthLevelLabelStyle }]}>{strengthLevelLabel}</Text>
+        <Text
+          style={[
+            styles.strengthDescription,
+            strengthDescriptionStyle,
+            { ...strengthLevelLabelStyle }
+          ]}>
+          {strengthLevelLabel}
+        </Text>
       </View>
     );
   }
-  
+
   render() {
-    return (
-      <View style={styles.wrapper}>
-        {this.renderPasswordInput()}
-        {this.renderPasswordStrength()}
-      </View>
-    );
+    return <View style={styles.wrapper}>{this.renderPasswordStrength()}</View>;
   }
 }
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: 'transparent',
-  },
-  inputWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    borderBottomWidth: 0.8,
-    borderColor: 'rgba(242, 242, 242, 0.5)'
-  },
-  input: {
-    flex: 1,
-    color: '#fff',
-    paddingTop: 7,
-    paddingBottom: 10,
-    fontSize: 20
+    backgroundColor: "transparent"
   },
   passwordStrengthWrapper: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginBottom: 10
   },
   passwordStrengthBar: {
     height: 10,
-    position: 'relative',
+    position: "relative",
     top: 5,
     bottom: 5,
     borderRadius: 5
@@ -334,12 +321,12 @@ const styles = StyleSheet.create({
     width: 0
   },
   strengthDescription: {
-    color: '#fff',
-    backgroundColor: 'transparent',
-    textAlign: 'right',
-    position: 'absolute',
+    color: "#ccc",
+    backgroundColor: "transparent",
+    textAlign: "right",
+    position: "absolute",
     right: 5,
-    top: 1,
+    top: 15,
     fontSize: 14
   }
 });

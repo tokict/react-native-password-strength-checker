@@ -1,11 +1,43 @@
 {
-  "name": "react-native-password-strength-checker",
-  "version": "1.0.12",
-  "description": "A react-native password input with strength checker for both IOS and Android",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "_from": "git+ssh://git@github.com/tokict/react-native-password-strength-checker.git",
+  "_id": "react-native-password-strength-checker@1.0.12",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/react-native-password-strength-checker",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "react-native-password-strength-checker@git+ssh://git@github.com/tokict/react-native-password-strength-checker.git",
+    "name": "react-native-password-strength-checker",
+    "escapedName": "react-native-password-strength-checker",
+    "rawSpec": "git+ssh://git@github.com/tokict/react-native-password-strength-checker.git",
+    "saveSpec": "git+ssh://git@github.com/tokict/react-native-password-strength-checker.git",
+    "fetchSpec": "ssh://git@github.com/tokict/react-native-password-strength-checker.git",
+    "gitCommittish": null
   },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "git+ssh://git@github.com/tokict/react-native-password-strength-checker.git#5473a31ed08a6abf64945aedcc176497b1b551b7",
+  "_spec": "react-native-password-strength-checker@git+ssh://git@github.com/tokict/react-native-password-strength-checker.git",
+  "_where": "/Volumes/Storage/React-native/lumielina/lumielina-mobile/lumielina",
+  "author": {
+    "name": "Dung Tran",
+    "email": "ttokic1985@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/tokict/react-native-password-strength-checker.git/issues",
+    "email": "ttokic1985@gmail.com"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "prop-types": "^15.5.10",
+    "zxcvbn": "^4.4.2"
+  },
+  "deprecated": false,
+  "description": "A react-native password strength checker for both IOS and Android",
+  "homepage": "https://github.com/tokict/react-native-password-strength-checker.git",
   "keywords": [
     "react",
     "react-component",
@@ -20,20 +52,15 @@
     "strength-checker",
     "password-strength-checker"
   ],
-  "dependencies": {
-    "lodash": "^4.17.4",
-    "prop-types": "^15.5.10",
-    "zxcvbn": "^4.4.2"
-  },
-  "homepage": "https://github.com/ttdung11t2/react-native-password-strength-checker.git",
-  "bugs": {
-    "url": "https://github.com/ttdung11t2/react-native-password-strength-checker.git/issues",
-    "email": "ttdung001@gmail.com"
-  },
+  "license": "MIT",
+  "main": "index.js",
+  "name": "react-native-password-strength-checker",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ttdung11t2/react-native-password-strength-checker.git"
+    "url": "git+https://github.com/tokict/react-native-password-strength-checker.git"
   },
-  "author": "Dung Tran <ttdung001@gmail.com>",
-  "license": "MIT"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "2.0.0"
 }
