@@ -6,11 +6,11 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import {
   View,
-  TextInput,
   StyleSheet,
   Dimensions,
   Text,
-  Animated
+  Animated,
+  ViewPropTypes
 } from "react-native";
 import zxcvbn from "zxcvbn";
 import _ from "lodash";
@@ -81,9 +81,9 @@ export default class PasswordStrengthChecker extends Component {
     strengthLevels: PropTypes.array,
     tooShort: PropTypes.object,
     minLevel: PropTypes.number,
-    strengthWrapperStyle: View.propTypes.style,
-    strengthBarStyle: View.propTypes.style,
-    innerStrengthBarStyle: View.propTypes.style,
+    strengthWrapperStyle: ViewPropTypes.style,
+    strengthBarStyle: ViewPropTypes.style,
+    innerStrengthBarStyle: ViewPropTypes.style,
     strengthDescriptionStyle: Text.propTypes.style,
     barColor: PropTypes.string,
     barWidthPercent: PropTypes.number,
